@@ -66,7 +66,7 @@ const EditPrompt = () => {
         setPost={setPost}
         submitting={submitting}
         handleSubmit={updatePrompt}
-      />) : "Sign in to Create a Prompt"}
+      />) : "Sign in to Update the Prompt"}
     </>
 
   );
