@@ -5,11 +5,36 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Router } from "next/router";
+import Link from "next/link";
+import BadWordsNext from 'bad-words-next';
+import en from 'bad-words-next/data/en.json';
+
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
   const { data: session } = useSession();
   const pathName = usePathname();
   const router = useRouter();
+
+  const np = {
+    "id": 'np',
+    "words": [
+      "machikney",
+      "machikne",
+      "machickne",
+      "machickney",
+      "randi",
+      "madarchod",
+      "muji",
+      "khatey",
+      "muth"
+    ],
+    "lookalike": {
+    }
+  };
+
+  const badwords = new BadWordsNext();
+  badwords.add(en);
+  badwords.add(np);
 
   const [copied, setCopied] = useState('');
 
@@ -22,7 +47,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
-        <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
+        <Link href={session?.user.id === post.creator._id ? '/profile' : `/profile/${post.creator._id}?name=${post.creator.username}`} className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
           <Image
             src={post.creator.image}
             alt="user_image"
@@ -34,7 +59,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
             <h3 className="font-satoshi font-semibold text-gray-900">{post.creator.username}</h3>
             <p className="font-inter text-sm text-gray-500">{post.creator.email}</p>
           </div>
-        </div>
+        </Link>
 
         <div className="copy_btn" onClick={handleCopy}>
           <Image
@@ -46,12 +71,12 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
         </div>
       </div>
 
-      <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
+      <p className="my-4 font-satoshi text-sm text-gray-700">{badwords.filter(post.prompt)}</p>
       <p
         className="font-inter text-sm blue_gradient cursor-pointer"
         onClick={() => handleTagClick && handleTagClick(post.tag)}
       >
-        {post.tag}
+        {badwords.filter(post.tag)}
       </p>
 
       {session?.user.id === post.creator._id && pathName === '/profile' && (
