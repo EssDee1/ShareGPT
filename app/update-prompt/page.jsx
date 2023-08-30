@@ -59,13 +59,16 @@ const EditPrompt = () => {
   };
 
   return (
-    <Form
-      type="Edit"
-      post={post}
-      setPost={setPost}
-      submitting={submitting}
-      handleSubmit={updatePrompt}
-    />
+    <>
+      {session ? (<Form
+        type="Edit"
+        post={post}
+        setPost={setPost}
+        submitting={submitting}
+        handleSubmit={updatePrompt}
+      />) : "Sign in to Create a Prompt"}
+    </>
+
   );
 };
 
